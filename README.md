@@ -7,11 +7,22 @@
 
 Terraform module to provision multiple Origins and multiple routes via behaviors.
 
-This example creates 2 buckets which are added to the distribution, the distibution then route to the route in one bucket but to two folders in another bucket routes oath1 and path2.
+The example examplea creates 2 s3 origins and multiple behaviors to different paths, the root points to one bucket and index.html and theres are 2 paths path1 which has one file cat.jpg and path2 which has dog.jpg.
+
+## ToDO
+
+This modules needs merging with the general cloudfront-s3 one i have, adding in route53 and ssl from ACM. It also needs modifiying to support different origins - e.g. api gateway.
 
 ## Usage
 
-Creates a static site with cloudfront distribution in front
+Create a file call **module.cloudfront.tf**:
+
+```
+module "cloudfront" {
+
+}
+```
+
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
