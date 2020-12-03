@@ -16,9 +16,6 @@ variable "bucket_name" {
 variable "geo_restrictions" {
 }
 
-variable "buckets" {
-  type = list
-}
 
 variable "default_behaviour" {}
 

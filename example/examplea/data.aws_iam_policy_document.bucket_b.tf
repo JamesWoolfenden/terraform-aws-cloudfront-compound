@@ -1,21 +1,20 @@
-data "aws_iam_policy_document" "routed" {
+data "aws_iam_policy_document" "b" {
   statement {
     actions = [
       "s3:GetObject",
     ]
 
     resources = [
-      "${aws_s3_bucket.routed.arn}/*",
+      "${aws_s3_bucket.b.arn}/*",
     ]
 
     principals {
       type = "AWS"
 
       identifiers = [
-        aws_cloudfront_origin_access_identity.site.iam_arn,
+        module.cloudfront.identity.iam_arn,
       ]
     }
-    sid = 1
   }
 
   statement {
@@ -24,16 +23,15 @@ data "aws_iam_policy_document" "routed" {
     ]
 
     resources = [
-      aws_s3_bucket.routed.arn,
+      aws_s3_bucket.b.arn,
     ]
 
     principals {
       type = "AWS"
 
       identifiers = [
-        aws_cloudfront_origin_access_identity.site.iam_arn,
+        module.cloudfront.identity.iam_arn,
       ]
     }
-    sid = 2
   }
 }

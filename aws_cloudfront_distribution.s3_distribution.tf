@@ -1,21 +1,17 @@
 
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   #checkov:skip=CKV_AWS_68: "CloudFront Distribution should have WAF enabled"
-  origin {
-    domain_name = aws_s3_bucket.b.bucket_regional_domain_name
-    origin_id   = local.s3_origin_id
 
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.site.cloudfront_access_identity_path
-    }
-  }
+  dynamic "origin" {
+    for_each = local.origins
+    content {
+      domain_name = origin.value["domain_name"]
+      origin_id   = origin.value["origin_id"]
 
-  origin {
-    domain_name = aws_s3_bucket.routed.bucket_regional_domain_name
-    origin_id   = local.secondary_s3_origin_id
-
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.site.cloudfront_access_identity_path
+      s3_origin_config {
+        origin_access_identity = origin.value["origin_access_identity"]
+      }
     }
   }
 
@@ -30,67 +26,44 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   default_cache_behavior {
-    allowed_methods  = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = local.s3_origin_id
+    allowed_methods  = var.default_behaviour.allowed_methods
+    cached_methods   = var.default_behaviour.cached_methods
+    target_origin_id = var.default_behaviour.origin_id
 
     forwarded_values {
-      query_string = false
+      query_string = var.default_behaviour.query_string
 
       cookies {
-        forward = "none"
+        forward = var.default_behaviour.forward
       }
     }
 
-    viewer_protocol_policy = "redirect-to-https"
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
+    viewer_protocol_policy = var.default_behaviour.viewer_protocol_policy
+    min_ttl                = var.default_behaviour.min_ttl
+    default_ttl            = var.default_behaviour.default_ttl
+    max_ttl                = var.default_behaviour.max_ttl
   }
 
-  # Cache behavior with precedence 0
-  ordered_cache_behavior {
-    path_pattern     = "/path2/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = local.secondary_s3_origin_id
-
-    forwarded_values {
-      query_string = false
-      headers      = ["Origin"]
-
-      cookies {
-        forward = "none"
+  dynamic "ordered_cache_behavior" {
+    for_each = var.behaviours
+    content {
+      path_pattern     = ordered_cache_behavior.value["path_pattern"]
+      allowed_methods  = ordered_cache_behavior.value["allowed_methods"]
+      cached_methods   = ordered_cache_behavior.value["cached_methods"]
+      target_origin_id = ordered_cache_behavior.value["origin_id"]
+      forwarded_values {
+        headers      = ordered_cache_behavior.value["headers"]
+        query_string = ordered_cache_behavior.value["query_string"]
+        cookies {
+          forward = ordered_cache_behavior.value["forward"]
+        }
       }
+      min_ttl                = ordered_cache_behavior.value["min_ttl"]
+      default_ttl            = ordered_cache_behavior.value["default_ttl"]
+      max_ttl                = ordered_cache_behavior.value["max_ttl"]
+      compress               = ordered_cache_behavior.value["compress"]
+      viewer_protocol_policy = ordered_cache_behavior.value["viewer_protocol_policy"]
     }
-
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
-  }
-
-  # Cache behavior with precedence 1
-  ordered_cache_behavior {
-    path_pattern     = "/path1/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD"]
-    target_origin_id = local.secondary_s3_origin_id
-
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
-    compress               = true
-    viewer_protocol_policy = "redirect-to-https"
   }
 
   price_class = "PriceClass_200"

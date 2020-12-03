@@ -31,8 +31,11 @@ Creates a static site with cloudfront distribution in front
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| behaviours | n/a | `any` | n/a | yes |
 | bucket\_name | n/a | `string` | n/a | yes |
+| buckets | n/a | `list` | n/a | yes |
 | common\_tags | n/a | `map` | n/a | yes |
+| default\_behaviour | n/a | `any` | n/a | yes |
 | geo\_restrictions | n/a | `any` | n/a | yes |
 | versioning | Switch to control versioning | `bool` | n/a | yes |
 
