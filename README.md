@@ -11,7 +11,7 @@ The example examplea creates 2 s3 origins and multiple behaviors to different pa
 
 ## ToDO
 
-This modules needs merging with the general cloudfront-s3 one i have, adding in route53 and ssl from ACM. It also needs modifiying to support different origins - e.g. api gateway.
+This module needs merging with the general cloudfront-s3 one I have, adding in route53 and ssl from ACM. It also needs modifiying to support different origins - e.g. api gateway. Ill get around to it...
 
 ## Usage
 
