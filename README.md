@@ -2,8 +2,12 @@
 
 [![Build Status](https://github.com/JamesWoolfenden/terraform-aws-cloudfront-compound/workflows/Verify%20and%20Bump/badge.svg?branch=master)](https://github.com/JamesWoolfenden/terraform-aws-cloudfront-compound)
 [![Latest Release](https://img.shields.io/github/release/JamesWoolfenden/terraform-aws-cloudfront-compound.svg)](https://github.com/JamesWoolfenden/terraform-aws-cloudfront-compound/releases/latest)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/JamesWoolfenden/terraform-aws-cloudfront-compound.svg?label=latest)](https://github.com/JamesWoolfenden/terraform-aws-cloudfront-compound/releases/latest)
+![Terraform Version](https://img.shields.io/badge/tf-%3E%3D0.14.0-blue.svg)
+[![Infrastructure Tests](https://www.bridgecrew.cloud/badges/github/JamesWoolfenden/terraform-aws-cloudfront-compound/cis_aws)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo=JamesWoolfenden%2Fterraform-aws-cloudfront-compound&benchmark=CIS+AWS+V1.2)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![checkov](https://img.shields.io/badge/checkov-verified-brightgreen)](https://www.checkov.io/)
+[![Infrastructure Tests](https://www.bridgecrew.cloud/badges/github/jameswoolfenden/terraform-aws-cloudfront-compound/general)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo=JamesWoolfenden%2Fterraform-aws-cloudfront-compound&benchmark=INFRASTRUCTURE+SECURITY)
 
 Terraform module to provision multiple Origins and multiple routes via behaviors.
 
@@ -17,45 +21,52 @@ This module needs merging with the general cloudfront-s3 one I have, adding in r
 
 Create a file call **module.cloudfront.tf**:
 
-```
+```terraform
 module "cloudfront" {
-
+  source            = "jameswoolfenden/aws/cloudfront-compound"
+  versioning        = var.versioning
+  common_tags       = var.common_tags
+  bucket_name       = var.bucket_name
+  geo_restrictions  = var.geo_restrictions
+  buckets           = [aws_s3_bucket.b, aws_s3_bucket.routed]
+  default_behaviour = var.default_behaviour
+  behaviours        = var.behaviours
 }
 ```
 
-
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
+
 ## Requirements
 
-| Name | Version |
-|------|---------|
+| Name      | Version |
+| --------- | ------- |
 | terraform | >= 0.13 |
-| aws | 3.19.0 |
+| aws       | 3.19.0  |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
-| aws | 3.19.0 |
+| ---- | ------- |
+| aws  | 3.19.0  |
 
 ## Inputs
 
-| Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| behaviours | n/a | `any` | n/a | yes |
-| bucket\_name | n/a | `string` | n/a | yes |
-| buckets | n/a | `list` | n/a | yes |
-| common\_tags | n/a | `map` | n/a | yes |
-| default\_behaviour | n/a | `any` | n/a | yes |
-| geo\_restrictions | n/a | `any` | n/a | yes |
-| versioning | Switch to control versioning | `bool` | n/a | yes |
+| Name              | Description                  | Type     | Default | Required |
+| ----------------- | ---------------------------- | -------- | ------- | :------: |
+| behaviours        | n/a                          | `any`    | n/a     |   yes    |
+| bucket_name       | n/a                          | `string` | n/a     |   yes    |
+| buckets           | n/a                          | `list`   | n/a     |   yes    |
+| common_tags       | n/a                          | `map`    | n/a     |   yes    |
+| default_behaviour | n/a                          | `any`    | n/a     |   yes    |
+| geo_restrictions  | n/a                          | `any`    | n/a     |   yes    |
+| versioning        | Switch to control versioning | `bool`   | n/a     |   yes    |
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| distribution | n/a |
-| identity | n/a |
+| Name         | Description |
+| ------------ | ----------- |
+| distribution | n/a         |
+| identity     | n/a         |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
@@ -79,7 +90,7 @@ Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-aws-
 
 ## Copyrights
 
-Copyright © 2020 James Woolfenden
+Copyright © 2021 James Woolfenden
 
 ## License
 
