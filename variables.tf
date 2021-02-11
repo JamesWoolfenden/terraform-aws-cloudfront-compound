@@ -4,7 +4,7 @@ variable "versioning" {
 }
 
 variable "common_tags" {
-  type = map
+  type = map(any)
 }
 
 
@@ -17,7 +17,7 @@ variable "geo_restrictions" {
 }
 
 variable "buckets" {
-  type = list
+  type = list(any)
 }
 
 variable "default_behaviour" {}
