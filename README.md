@@ -35,38 +35,34 @@ module "cloudfront" {
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
 ## Requirements
 
-| Name      | Version |
-| --------- | ------- |
-| terraform | >= 0.13 |
-| aws       | 3.19.0  |
+No requirements.
 
 ## Providers
 
 | Name | Version |
-| ---- | ------- |
-| aws  | 3.19.0  |
+|------|---------|
+| aws | n/a |
 
 ## Inputs
 
-| Name              | Description                  | Type     | Default | Required |
-| ----------------- | ---------------------------- | -------- | ------- | :------: |
-| behaviours        | n/a                          | `any`    | n/a     |   yes    |
-| bucket_name       | n/a                          | `string` | n/a     |   yes    |
-| buckets           | n/a                          | `list`   | n/a     |   yes    |
-| common_tags       | n/a                          | `map`    | n/a     |   yes    |
-| default_behaviour | n/a                          | `any`    | n/a     |   yes    |
-| geo_restrictions  | n/a                          | `any`    | n/a     |   yes    |
-| versioning        | Switch to control versioning | `bool`   | n/a     |   yes    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| behaviours | n/a | `any` | n/a | yes |
+| bucket\_name | n/a | `string` | n/a | yes |
+| buckets | n/a | `list(any)` | n/a | yes |
+| common\_tags | n/a | `map(any)` | n/a | yes |
+| default\_behaviour | n/a | `any` | n/a | yes |
+| geo\_restrictions | n/a | `any` | n/a | yes |
+| versioning | Switch to control versioning | `bool` | n/a | yes |
 
 ## Outputs
 
-| Name         | Description |
-| ------------ | ----------- |
-| distribution | n/a         |
-| identity     | n/a         |
+| Name | Description |
+|------|-------------|
+| distribution | n/a |
+| identity | n/a |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
