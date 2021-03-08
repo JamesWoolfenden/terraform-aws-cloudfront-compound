@@ -1,5 +1,7 @@
 common_tags = {
-  Name = "My bucket"
+  name        = "examplea"
+  "createdby" = "terraform"
+  module      = "terraform-aws-cloudfront-s3"
 }
 
 bucket_name = "anotherprivatemybucket"
