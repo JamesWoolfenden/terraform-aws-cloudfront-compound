@@ -1,5 +1,6 @@
 
 
+# tfsec:ignore:AWS045
 resource "aws_cloudfront_distribution" "s3_distribution" {
   #checkov:skip=CKV_AWS_68: "CloudFront Distribution should have WAF enabled"
 
@@ -76,7 +77,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    cloudfront_default_certificate = var.viewer_certificate["cloudfront_default_certificate"]
+    minimum_protocol_version       = var.viewer_certificate["minimum_protocol_version"]
   }
 
   lifecycle {
@@ -85,4 +87,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   tags = var.common_tags
 
+}
+
+variable "viewer_certificate" {
+  default = {
+    cloudfront_default_certificate = false
+    minimum_protocol_version       = "TLSv1.2_2019"
+  }
 }

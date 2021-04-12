@@ -1,7 +1,11 @@
+
 resource "aws_s3_bucket" "b" {
-  #checkov:skip=CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
-  #checkov:skip=CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
-  #checkov:skip=CKV_AWS_52: "Ensure S3 bucket has MFA delete enabled"
+  # tfsec:ignore:AWS002
+  # tfsec:ignore:AWS077
+  # checkov:skip=CKV_AWS_144: ADD REASON
+  # checkov:skip=CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+  # checkov:skip=CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+  # checkov:skip=CKV_AWS_52: "Ensure S3 bucket has MFA delete enabled"
   bucket = var.bucket_name
   acl    = "private"
   versioning {
