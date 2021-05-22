@@ -1,5 +1,6 @@
 
 resource "aws_s3_bucket" "b" {
+  # checkov:skip=CKV2_AWS_6: ADD REASON
   # tfsec:ignore:AWS002
   # tfsec:ignore:AWS077
   # checkov:skip=CKV_AWS_144: ADD REASON
@@ -23,6 +24,4 @@ resource "aws_s3_bucket" "b" {
   lifecycle {
     ignore_changes = [tags]
   }
-
-  tags = var.common_tags
 }

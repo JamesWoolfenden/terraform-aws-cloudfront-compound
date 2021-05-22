@@ -25,7 +25,6 @@ Create a file call **module.cloudfront.tf**:
 module "cloudfront" {
   source            = "jameswoolfenden/aws/cloudfront-compound"
   versioning        = var.versioning
-  common_tags       = var.common_tags
   bucket_name       = var.bucket_name
   geo_restrictions  = var.geo_restrictions
   buckets           = [aws_s3_bucket.b, aws_s3_bucket.routed]
@@ -56,6 +55,7 @@ No modules.
 | [aws_cloudfront_distribution.s3_distribution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
 | [aws_cloudfront_origin_access_identity.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_identity) | resource |
 | [aws_s3_bucket.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_public_access_block.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 
 ## Inputs
 
@@ -64,7 +64,6 @@ No modules.
 | <a name="input_behaviours"></a> [behaviours](#input\_behaviours) | n/a | `any` | n/a | yes |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | n/a | yes |
 | <a name="input_buckets"></a> [buckets](#input\_buckets) | n/a | `list(any)` | n/a | yes |
-| <a name="input_common_tags"></a> [common\_tags](#input\_common\_tags) | n/a | `map(any)` | n/a | yes |
 | <a name="input_default_behaviour"></a> [default\_behaviour](#input\_default\_behaviour) | n/a | `any` | n/a | yes |
 | <a name="input_geo_restrictions"></a> [geo\_restrictions](#input\_geo\_restrictions) | n/a | `any` | n/a | yes |
 | <a name="input_versioning"></a> [versioning](#input\_versioning) | Switch to control versioning | `bool` | n/a | yes |
@@ -76,6 +75,7 @@ No modules.
 |------|-------------|
 | <a name="output_distribution"></a> [distribution](#output\_distribution) | n/a |
 | <a name="output_identity"></a> [identity](#output\_identity) | n/a |
+| <a name="output_logging"></a> [logging](#output\_logging) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Related Projects

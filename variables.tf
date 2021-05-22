@@ -3,11 +3,6 @@ variable "versioning" {
   description = "Switch to control versioning"
 }
 
-variable "common_tags" {
-  type = map(any)
-}
-
-
 variable "bucket_name" {
   type = string
 }

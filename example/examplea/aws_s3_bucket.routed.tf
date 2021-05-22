@@ -1,6 +1,7 @@
 
 
 resource "aws_s3_bucket" "routed" {
+  # checkov:skip=CKV2_AWS_6: ADD REASON
   # tfsec:ignore:AWS002
   # tfsec:ignore:AWS077
   # checkov:skip=CKV_AWS_144: ADD REASON
@@ -24,6 +25,4 @@ resource "aws_s3_bucket" "routed" {
   lifecycle {
     ignore_changes = [tags]
   }
-
-  tags = var.common_tags
 }

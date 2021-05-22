@@ -1,8 +1,3 @@
-common_tags = {
-  name        = "examplea"
-  "createdby" = "terraform"
-  module      = "terraform-aws-cloudfront-s3"
-}
 
 bucket_name = "anotherprivatemybucket"
 geo_restrictions = {

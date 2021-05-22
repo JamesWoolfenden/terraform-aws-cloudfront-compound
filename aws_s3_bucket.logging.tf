@@ -39,6 +39,4 @@ resource "aws_s3_bucket" "logging" {
   lifecycle {
     ignore_changes = [tags]
   }
-
-  tags = var.common_tags
 }
