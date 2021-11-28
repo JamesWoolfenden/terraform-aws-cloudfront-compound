@@ -3,7 +3,7 @@
 # tfsec:ignore:AWS045
 resource "aws_cloudfront_distribution" "s3_distribution" {
   #checkov:skip=CKV_AWS_68: "CloudFront Distribution should have WAF enabled"
-
+  #checkov:skip=CKV2_AWS_32:
   dynamic "origin" {
     for_each = local.origins
     content {
@@ -27,9 +27,10 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   default_cache_behavior {
-    allowed_methods  = var.default_behaviour.allowed_methods
-    cached_methods   = var.default_behaviour.cached_methods
-    target_origin_id = var.default_behaviour.origin_id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.example.id
+    allowed_methods            = var.default_behaviour.allowed_methods
+    cached_methods             = var.default_behaviour.cached_methods
+    target_origin_id           = var.default_behaviour.origin_id
 
     forwarded_values {
       query_string = var.default_behaviour.query_string
@@ -83,12 +84,5 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   lifecycle {
     ignore_changes = [tags]
-  }
-}
-
-variable "viewer_certificate" {
-  default = {
-    cloudfront_default_certificate = false
-    minimum_protocol_version       = "TLSv1.2_2019"
   }
 }

@@ -54,6 +54,7 @@ No modules.
 |------|------|
 | [aws_cloudfront_distribution.s3_distribution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
 | [aws_cloudfront_origin_access_identity.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_identity) | resource |
+| [aws_cloudfront_response_headers_policy.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_response_headers_policy) | resource |
 | [aws_s3_bucket.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_public_access_block.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 
@@ -64,10 +65,17 @@ No modules.
 | <a name="input_behaviours"></a> [behaviours](#input\_behaviours) | n/a | `any` | n/a | yes |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | n/a | yes |
 | <a name="input_buckets"></a> [buckets](#input\_buckets) | n/a | `list(any)` | n/a | yes |
+| <a name="input_content_security_policy"></a> [content\_security\_policy](#input\_content\_security\_policy) | n/a | `map(any)` | <pre>{<br>  "content_security_policy": "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none'",<br>  "override": true<br>}</pre> | no |
+| <a name="input_content_type_options"></a> [content\_type\_options](#input\_content\_type\_options) | n/a | `map(any)` | <pre>{<br>  "override": true<br>}</pre> | no |
 | <a name="input_default_behaviour"></a> [default\_behaviour](#input\_default\_behaviour) | n/a | `any` | n/a | yes |
+| <a name="input_frame_options"></a> [frame\_options](#input\_frame\_options) | n/a | `map(any)` | <pre>{<br>  "frame_option": "DENY",<br>  "override": true<br>}</pre> | no |
 | <a name="input_geo_restrictions"></a> [geo\_restrictions](#input\_geo\_restrictions) | n/a | `any` | n/a | yes |
+| <a name="input_policy_name"></a> [policy\_name](#input\_policy\_name) | n/a | `string` | `"examplea"` | no |
+| <a name="input_referrer_policy"></a> [referrer\_policy](#input\_referrer\_policy) | n/a | `map(any)` | <pre>{<br>  "override": true,<br>  "referrer_policy": "same-origin"<br>}</pre> | no |
+| <a name="input_strict_transport_security"></a> [strict\_transport\_security](#input\_strict\_transport\_security) | n/a | <pre>object({<br>    access_control_max_age_sec = number<br>    include_subdomains         = bool<br>    override                   = bool<br>    preload                    = bool<br>  })</pre> | <pre>{<br>  "access_control_max_age_sec": 31536000,<br>  "include_subdomains": true,<br>  "override": true,<br>  "preload": true<br>}</pre> | no |
 | <a name="input_versioning"></a> [versioning](#input\_versioning) | Switch to control versioning | `bool` | n/a | yes |
 | <a name="input_viewer_certificate"></a> [viewer\_certificate](#input\_viewer\_certificate) | n/a | `map` | <pre>{<br>  "cloudfront_default_certificate": false,<br>  "minimum_protocol_version": "TLSv1.2_2019"<br>}</pre> | no |
+| <a name="input_xss_protection"></a> [xss\_protection](#input\_xss\_protection) | n/a | `map(any)` | <pre>{<br>  "mode_block": true,<br>  "override": true,<br>  "protection": true<br>}</pre> | no |
 
 ## Outputs
 
@@ -98,7 +106,7 @@ Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-aws-
 
 ## Copyrights
 
-Copyright © 2021 James Woolfenden
+Copyright 2021 James Woolfenden
 
 ## License
 
