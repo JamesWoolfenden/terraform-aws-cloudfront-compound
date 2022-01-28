@@ -34,16 +34,15 @@ module "cloudfront" {
 ```
 
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
-
 ## Requirements
 
 No requirements.
 
 ## Providers
 
-| Name                                             | Version |
-| ------------------------------------------------ | ------- |
-| <a name="provider_aws"></a> [aws](#provider_aws) | n/a     |
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 
 ## Modules
 
@@ -51,41 +50,40 @@ No modules.
 
 ## Resources
 
-| Name                                                                                                                                                             | Type     |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| [aws_cloudfront_distribution.s3_distribution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution)               | resource |
-| [aws_cloudfront_origin_access_identity.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_identity)      | resource |
+| Name | Type |
+|------|------|
+| [aws_cloudfront_distribution.s3_distribution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
+| [aws_cloudfront_origin_access_identity.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_identity) | resource |
 | [aws_cloudfront_response_headers_policy.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_response_headers_policy) | resource |
-| [aws_s3_bucket.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket)                                                   | resource |
-| [aws_s3_bucket_public_access_block.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block)           | resource |
+| [aws_s3_bucket.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_public_access_block.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 
 ## Inputs
 
-| Name                                                                                                         | Description                  | Type                                                                                                                                    | Default                                                                                                                                                                                     | Required |
-| ------------------------------------------------------------------------------------------------------------ | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------: |
-| <a name="input_behaviours"></a> [behaviours](#input_behaviours)                                              | n/a                          | `any`                                                                                                                                   | n/a                                                                                                                                                                                         |   yes    |
-| <a name="input_bucket_name"></a> [bucket_name](#input_bucket_name)                                           | n/a                          | `string`                                                                                                                                | n/a                                                                                                                                                                                         |   yes    |
-| <a name="input_buckets"></a> [buckets](#input_buckets)                                                       | n/a                          | `list(any)`                                                                                                                             | n/a                                                                                                                                                                                         |   yes    |
-| <a name="input_content_security_policy"></a> [content_security_policy](#input_content_security_policy)       | n/a                          | `map(any)`                                                                                                                              | <pre>{<br> "content_security_policy": "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none'",<br> "override": true<br>}</pre> |    no    |
-| <a name="input_content_type_options"></a> [content_type_options](#input_content_type_options)                | n/a                          | `map(any)`                                                                                                                              | <pre>{<br> "override": true<br>}</pre>                                                                                                                                                      |    no    |
-| <a name="input_default_behaviour"></a> [default_behaviour](#input_default_behaviour)                         | n/a                          | `any`                                                                                                                                   | n/a                                                                                                                                                                                         |   yes    |
-| <a name="input_frame_options"></a> [frame_options](#input_frame_options)                                     | n/a                          | `map(any)`                                                                                                                              | <pre>{<br> "frame_option": "DENY",<br> "override": true<br>}</pre>                                                                                                                          |    no    |
-| <a name="input_geo_restrictions"></a> [geo_restrictions](#input_geo_restrictions)                            | n/a                          | `any`                                                                                                                                   | n/a                                                                                                                                                                                         |   yes    |
-| <a name="input_policy_name"></a> [policy_name](#input_policy_name)                                           | n/a                          | `string`                                                                                                                                | `"examplea"`                                                                                                                                                                                |    no    |
-| <a name="input_referrer_policy"></a> [referrer_policy](#input_referrer_policy)                               | n/a                          | `map(any)`                                                                                                                              | <pre>{<br> "override": true,<br> "referrer_policy": "same-origin"<br>}</pre>                                                                                                                |    no    |
-| <a name="input_strict_transport_security"></a> [strict_transport_security](#input_strict_transport_security) | n/a                          | <pre>object({<br> access_control_max_age_sec = number<br> include_subdomains = bool<br> override = bool<br> preload = bool<br> })</pre> | <pre>{<br> "access_control_max_age_sec": 31536000,<br> "include_subdomains": true,<br> "override": true,<br> "preload": true<br>}</pre>                                                     |    no    |
-| <a name="input_versioning"></a> [versioning](#input_versioning)                                              | Switch to control versioning | `bool`                                                                                                                                  | n/a                                                                                                                                                                                         |   yes    |
-| <a name="input_viewer_certificate"></a> [viewer_certificate](#input_viewer_certificate)                      | n/a                          | `map`                                                                                                                                   | <pre>{<br> "cloudfront_default_certificate": false,<br> "minimum_protocol_version": "TLSv1.2_2019"<br>}</pre>                                                                               |    no    |
-| <a name="input_xss_protection"></a> [xss_protection](#input_xss_protection)                                  | n/a                          | `map(any)`                                                                                                                              | <pre>{<br> "mode_block": true,<br> "override": true,<br> "protection": true<br>}</pre>                                                                                                      |    no    |
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_behaviours"></a> [behaviours](#input\_behaviours) | n/a | `any` | n/a | yes |
+| <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | n/a | yes |
+| <a name="input_buckets"></a> [buckets](#input\_buckets) | n/a | `list(any)` | n/a | yes |
+| <a name="input_content_security_policy"></a> [content\_security\_policy](#input\_content\_security\_policy) | n/a | `map(any)` | <pre>{<br>  "content_security_policy": "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none'",<br>  "override": true<br>}</pre> | no |
+| <a name="input_content_type_options"></a> [content\_type\_options](#input\_content\_type\_options) | n/a | `map(any)` | <pre>{<br>  "override": true<br>}</pre> | no |
+| <a name="input_default_behaviour"></a> [default\_behaviour](#input\_default\_behaviour) | n/a | `any` | n/a | yes |
+| <a name="input_frame_options"></a> [frame\_options](#input\_frame\_options) | n/a | `map(any)` | <pre>{<br>  "frame_option": "DENY",<br>  "override": true<br>}</pre> | no |
+| <a name="input_geo_restrictions"></a> [geo\_restrictions](#input\_geo\_restrictions) | n/a | `any` | n/a | yes |
+| <a name="input_policy_name"></a> [policy\_name](#input\_policy\_name) | n/a | `string` | `"examplea"` | no |
+| <a name="input_referrer_policy"></a> [referrer\_policy](#input\_referrer\_policy) | n/a | `map(any)` | <pre>{<br>  "override": true,<br>  "referrer_policy": "same-origin"<br>}</pre> | no |
+| <a name="input_strict_transport_security"></a> [strict\_transport\_security](#input\_strict\_transport\_security) | n/a | <pre>object({<br>    access_control_max_age_sec = number<br>    include_subdomains         = bool<br>    override                   = bool<br>    preload                    = bool<br>  })</pre> | <pre>{<br>  "access_control_max_age_sec": 31536000,<br>  "include_subdomains": true,<br>  "override": true,<br>  "preload": true<br>}</pre> | no |
+| <a name="input_versioning"></a> [versioning](#input\_versioning) | Switch to control versioning | `bool` | n/a | yes |
+| <a name="input_viewer_certificate"></a> [viewer\_certificate](#input\_viewer\_certificate) | n/a | `map` | <pre>{<br>  "cloudfront_default_certificate": false,<br>  "minimum_protocol_version": "TLSv1.2_2019"<br>}</pre> | no |
+| <a name="input_xss_protection"></a> [xss\_protection](#input\_xss\_protection) | n/a | `map(any)` | <pre>{<br>  "mode_block": true,<br>  "override": true,<br>  "protection": true<br>}</pre> | no |
 
 ## Outputs
 
-| Name                                                                    | Description |
-| ----------------------------------------------------------------------- | ----------- |
-| <a name="output_distribution"></a> [distribution](#output_distribution) | n/a         |
-| <a name="output_identity"></a> [identity](#output_identity)             | n/a         |
-| <a name="output_logging"></a> [logging](#output_logging)                | n/a         |
-
+| Name | Description |
+|------|-------------|
+| <a name="output_distribution"></a> [distribution](#output\_distribution) | n/a |
+| <a name="output_identity"></a> [identity](#output\_identity) | n/a |
+| <a name="output_logging"></a> [logging](#output\_logging) | n/a |
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 
 ## Related Projects
