@@ -86,3 +86,7 @@ variable "viewer_certificate" {
     minimum_protocol_version       = "TLSv1.2_2019"
   }
 }
+
+variable "kms_key" {
+
+}

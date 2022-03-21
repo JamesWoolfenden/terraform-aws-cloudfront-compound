@@ -42,7 +42,7 @@ No requirements.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.36.0 |
 
 ## Modules
 
@@ -56,7 +56,11 @@ No modules.
 | [aws_cloudfront_origin_access_identity.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_identity) | resource |
 | [aws_cloudfront_response_headers_policy.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_response_headers_policy) | resource |
 | [aws_s3_bucket.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_acl.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_acl) | resource |
+| [aws_s3_bucket_lifecycle_configuration.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration) | resource |
 | [aws_s3_bucket_public_access_block.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [aws_s3_bucket_versioning.logging](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
 
 ## Inputs
 
@@ -70,6 +74,7 @@ No modules.
 | <a name="input_default_behaviour"></a> [default\_behaviour](#input\_default\_behaviour) | n/a | `any` | n/a | yes |
 | <a name="input_frame_options"></a> [frame\_options](#input\_frame\_options) | n/a | `map(any)` | <pre>{<br>  "frame_option": "DENY",<br>  "override": true<br>}</pre> | no |
 | <a name="input_geo_restrictions"></a> [geo\_restrictions](#input\_geo\_restrictions) | n/a | `any` | n/a | yes |
+| <a name="input_kms_key"></a> [kms\_key](#input\_kms\_key) | n/a | `any` | n/a | yes |
 | <a name="input_policy_name"></a> [policy\_name](#input\_policy\_name) | n/a | `string` | `"examplea"` | no |
 | <a name="input_referrer_policy"></a> [referrer\_policy](#input\_referrer\_policy) | n/a | `map(any)` | <pre>{<br>  "override": true,<br>  "referrer_policy": "same-origin"<br>}</pre> | no |
 | <a name="input_strict_transport_security"></a> [strict\_transport\_security](#input\_strict\_transport\_security) | n/a | <pre>object({<br>    access_control_max_age_sec = number<br>    include_subdomains         = bool<br>    override                   = bool<br>    preload                    = bool<br>  })</pre> | <pre>{<br>  "access_control_max_age_sec": 31536000,<br>  "include_subdomains": true,<br>  "override": true,<br>  "preload": true<br>}</pre> | no |
