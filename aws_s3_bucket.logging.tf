@@ -7,6 +7,7 @@ resource "aws_s3_bucket" "logging" {
   # checkov:skip=CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
   # checkov:skip=CKV_AWS_52: "Ensure S3 bucket has MFA delete enabled"
   # checkov:skip=CKV2_AWS_41: Not required
+  # checkov:skip=CKV2_AWS_62: Event notifications not required for logging bucket
   bucket = "${var.bucket_name}-logging"
 
 
@@ -14,12 +15,10 @@ resource "aws_s3_bucket" "logging" {
     ignore_changes = [tags]
   }
 }
-
 resource "aws_s3_bucket_acl" "logging" {
   bucket = aws_s3_bucket.logging.bucket
   acl    = "log-delivery-write"
 }
-
 resource "aws_s3_bucket_server_side_encryption_configuration" "logging" {
   bucket = aws_s3_bucket.logging.bucket
   rule {
@@ -30,7 +29,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logging" {
   }
 
 }
-
 resource "aws_s3_bucket_versioning" "logging" {
   bucket = aws_s3_bucket.logging.id
   versioning_configuration {
@@ -38,8 +36,6 @@ resource "aws_s3_bucket_versioning" "logging" {
     mfa_delete = "Disabled"
   }
 }
-
-
 resource "aws_s3_bucket_lifecycle_configuration" "logging" {
   bucket = aws_s3_bucket.logging.id
 

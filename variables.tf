@@ -2,25 +2,16 @@ variable "versioning" {
   type        = bool
   description = "Switch to control versioning"
 }
-
 variable "bucket_name" {
   type = string
 }
-
-
 variable "geo_restrictions" {
 }
-
 variable "buckets" {
   type = list(any)
 }
-
 variable "default_behaviour" {}
-
 variable "behaviours" {}
-
-
-
 variable "content_security_policy" {
   type = map(any)
   default = {
@@ -28,14 +19,12 @@ variable "content_security_policy" {
     override                = true
   }
 }
-
 variable "content_type_options" {
   type = map(any)
   default = {
     override = true
   }
 }
-
 variable "frame_options" {
   type = map(any)
   default = {
@@ -43,14 +32,12 @@ variable "frame_options" {
     override     = true
   }
 }
-
 variable "referrer_policy" {
   type = map(any)
   default = { referrer_policy = "same-origin"
     override = true
   }
 }
-
 variable "strict_transport_security" {
   type = object({
     access_control_max_age_sec = number
@@ -65,7 +52,6 @@ variable "strict_transport_security" {
     preload                    = true
   }
 }
-
 variable "xss_protection" {
   type = map(any)
   default = {
@@ -74,19 +60,15 @@ variable "xss_protection" {
     protection = true
   }
 }
-
 variable "policy_name" {
   default = "examplea"
 }
-
-
 variable "viewer_certificate" {
   default = {
     cloudfront_default_certificate = false
     minimum_protocol_version       = "TLSv1.2_2019"
   }
 }
-
 variable "kms_key" {
 
 }

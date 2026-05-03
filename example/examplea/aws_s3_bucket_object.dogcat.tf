@@ -1,6 +1,3 @@
-
-
-
 resource "aws_s3_object" "cat" {
   #checkov:skip=CKV_AWS_186:
   bucket       = aws_s3_bucket.routed.id
@@ -11,7 +8,6 @@ resource "aws_s3_object" "cat" {
     ignore_changes = all
   }
 }
-
 resource "aws_s3_object" "dog" {
   #checkov:skip=CKV_AWS_186:
   bucket       = aws_s3_bucket.routed.id

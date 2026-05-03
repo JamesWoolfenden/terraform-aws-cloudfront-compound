@@ -1,4 +1,3 @@
-
 resource "aws_s3_bucket" "b" {
   # checkov:skip=CKV2_AWS_6: ADD REASON
   # tfsec:ignore:AWS002
@@ -10,13 +9,14 @@ resource "aws_s3_bucket" "b" {
   # checkov:skip=CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
   # checkov:skip=CKV_AWS_52: "Ensure S3 bucket has MFA delete enabled"
   # checkov:skip=CKV2_AWS_41: Not required
+  # checkov:skip=CKV2_AWS_62: Event notifications not required for this bucket
+  # checkov:skip=CKV2_AWS_61: Lifecycle managed externally
   bucket = var.bucket_name
 
   lifecycle {
     ignore_changes = [tags]
   }
 }
-
 resource "aws_s3_bucket_server_side_encryption_configuration" "b" {
   bucket = aws_s3_bucket.b.bucket
   rule {
@@ -27,7 +27,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "b" {
   }
 
 }
-
 resource "aws_s3_bucket_versioning" "b" {
   bucket = aws_s3_bucket.b.id
   versioning_configuration {
@@ -35,7 +34,6 @@ resource "aws_s3_bucket_versioning" "b" {
     mfa_delete = "Disabled"
   }
 }
-
 resource "aws_s3_bucket_acl" "b" {
   bucket = aws_s3_bucket.b.bucket
   acl    = "private"
