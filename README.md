@@ -4,18 +4,16 @@
 [![Latest Release](https://img.shields.io/github/release/JamesWoolfenden/terraform-aws-cloudfront-compound.svg)](https://github.com/JamesWoolfenden/terraform-aws-cloudfront-compound/releases/latest)
 [![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/JamesWoolfenden/terraform-aws-cloudfront-compound.svg?label=latest)](https://github.com/JamesWoolfenden/terraform-aws-cloudfront-compound/releases/latest)
 ![Terraform Version](https://img.shields.io/badge/tf-%3E%3D0.14.0-blue.svg)
-[![Infrastructure Tests](https://www.bridgecrew.cloud/badges/github/JamesWoolfenden/terraform-aws-cloudfront-compound/cis_aws)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo=JamesWoolfenden%2Fterraform-aws-cloudfront-compound&benchmark=CIS+AWS+V1.2)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![checkov](https://img.shields.io/badge/checkov-verified-brightgreen)](https://www.checkov.io/)
-[![Infrastructure Tests](https://www.bridgecrew.cloud/badges/github/jameswoolfenden/terraform-aws-cloudfront-compound/general)](https://www.bridgecrew.cloud/link/badge?vcs=github&fullRepo=JamesWoolfenden%2Fterraform-aws-cloudfront-compound&benchmark=INFRASTRUCTURE+SECURITY)
 
 Terraform module to provision multiple Origins and multiple routes via behaviors.
 
-The example examplea creates 2 s3 origins and multiple behaviors to different paths, the root points to one bucket and index.html and theres are 2 paths path1 which has one file cat.jpg and path2 which has dog.jpg.
+The example examplea creates 2 s3 origins and multiple behaviors to different paths, the root points to one bucket and index.html and there are 2 paths path1 which has one file cat.jpg and path2 which has dog.jpg.
 
 ## ToDO
 
-This module needs merging with the general cloudfront-s3 one I have, adding in route53 and ssl from ACM. It also needs modifiying to support different origins - e.g. api gateway. Ill get around to it...
+This module needs merging with the general cloudfront-s3 one I have, adding in route53 and ssl from ACM. It also needs modifying to support different origins - e.g. api gateway. Ill get around to it...
 
 ## Usage
 
@@ -41,7 +39,7 @@ No requirements.
 ## Providers
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
 
 ## Modules
@@ -51,7 +49,7 @@ No modules.
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_cloudfront_distribution.s3_distribution](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
 | [aws_cloudfront_origin_access_identity.site](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_identity) | resource |
 | [aws_cloudfront_response_headers_policy.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_response_headers_policy) | resource |
@@ -65,27 +63,27 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_behaviours"></a> [behaviours](#input\_behaviours) | n/a | `any` | n/a | yes |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | n/a | `string` | n/a | yes |
 | <a name="input_buckets"></a> [buckets](#input\_buckets) | n/a | `list(any)` | n/a | yes |
-| <a name="input_content_security_policy"></a> [content\_security\_policy](#input\_content\_security\_policy) | n/a | `map(any)` | <pre>{<br>  "content_security_policy": "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none'",<br>  "override": true<br>}</pre> | no |
-| <a name="input_content_type_options"></a> [content\_type\_options](#input\_content\_type\_options) | n/a | `map(any)` | <pre>{<br>  "override": true<br>}</pre> | no |
+| <a name="input_content_security_policy"></a> [content\_security\_policy](#input\_content\_security\_policy) | n/a | `map(any)` | <pre>{<br/>  "content_security_policy": "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; frame-ancestors 'none'",<br/>  "override": true<br/>}</pre> | no |
+| <a name="input_content_type_options"></a> [content\_type\_options](#input\_content\_type\_options) | n/a | `map(any)` | <pre>{<br/>  "override": true<br/>}</pre> | no |
 | <a name="input_default_behaviour"></a> [default\_behaviour](#input\_default\_behaviour) | n/a | `any` | n/a | yes |
-| <a name="input_frame_options"></a> [frame\_options](#input\_frame\_options) | n/a | `map(any)` | <pre>{<br>  "frame_option": "DENY",<br>  "override": true<br>}</pre> | no |
+| <a name="input_frame_options"></a> [frame\_options](#input\_frame\_options) | n/a | `map(any)` | <pre>{<br/>  "frame_option": "DENY",<br/>  "override": true<br/>}</pre> | no |
 | <a name="input_geo_restrictions"></a> [geo\_restrictions](#input\_geo\_restrictions) | n/a | `any` | n/a | yes |
 | <a name="input_kms_key"></a> [kms\_key](#input\_kms\_key) | n/a | `any` | n/a | yes |
 | <a name="input_policy_name"></a> [policy\_name](#input\_policy\_name) | n/a | `string` | `"examplea"` | no |
-| <a name="input_referrer_policy"></a> [referrer\_policy](#input\_referrer\_policy) | n/a | `map(any)` | <pre>{<br>  "override": true,<br>  "referrer_policy": "same-origin"<br>}</pre> | no |
-| <a name="input_strict_transport_security"></a> [strict\_transport\_security](#input\_strict\_transport\_security) | n/a | <pre>object({<br>    access_control_max_age_sec = number<br>    include_subdomains         = bool<br>    override                   = bool<br>    preload                    = bool<br>  })</pre> | <pre>{<br>  "access_control_max_age_sec": 31536000,<br>  "include_subdomains": true,<br>  "override": true,<br>  "preload": true<br>}</pre> | no |
+| <a name="input_referrer_policy"></a> [referrer\_policy](#input\_referrer\_policy) | n/a | `map(any)` | <pre>{<br/>  "override": true,<br/>  "referrer_policy": "same-origin"<br/>}</pre> | no |
+| <a name="input_strict_transport_security"></a> [strict\_transport\_security](#input\_strict\_transport\_security) | n/a | <pre>object({<br/>    access_control_max_age_sec = number<br/>    include_subdomains         = bool<br/>    override                   = bool<br/>    preload                    = bool<br/>  })</pre> | <pre>{<br/>  "access_control_max_age_sec": 31536000,<br/>  "include_subdomains": true,<br/>  "override": true,<br/>  "preload": true<br/>}</pre> | no |
 | <a name="input_versioning"></a> [versioning](#input\_versioning) | Switch to control versioning | `bool` | n/a | yes |
-| <a name="input_viewer_certificate"></a> [viewer\_certificate](#input\_viewer\_certificate) | n/a | `map` | <pre>{<br>  "cloudfront_default_certificate": false,<br>  "minimum_protocol_version": "TLSv1.2_2019"<br>}</pre> | no |
-| <a name="input_xss_protection"></a> [xss\_protection](#input\_xss\_protection) | n/a | `map(any)` | <pre>{<br>  "mode_block": true,<br>  "override": true,<br>  "protection": true<br>}</pre> | no |
+| <a name="input_viewer_certificate"></a> [viewer\_certificate](#input\_viewer\_certificate) | n/a | `map` | <pre>{<br/>  "cloudfront_default_certificate": false,<br/>  "minimum_protocol_version": "TLSv1.2_2019"<br/>}</pre> | no |
+| <a name="input_xss_protection"></a> [xss\_protection](#input\_xss\_protection) | n/a | `map(any)` | <pre>{<br/>  "mode_block": true,<br/>  "override": true,<br/>  "protection": true<br/>}</pre> | no |
 
 ## Outputs
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | <a name="output_distribution"></a> [distribution](#output\_distribution) | n/a |
 | <a name="output_identity"></a> [identity](#output\_identity) | n/a |
 | <a name="output_logging"></a> [logging](#output\_logging) | n/a |
@@ -202,7 +200,7 @@ Please use the [issue tracker](https://github.com/JamesWoolfenden/terraform-aws-
 
 ## Copyrights
 
-Copyright 2021-2022 James Woolfenden
+Copyright 2021-2026 James Woolfenden
 
 ## License
 
