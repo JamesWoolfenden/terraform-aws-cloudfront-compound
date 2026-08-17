@@ -1,5 +1,6 @@
 # tfsec:ignore:AWS077
 resource "aws_s3_bucket" "logging" {
+  # holden:ignore:HLD_AWS_144: this is the terminal logging destination bucket; pointing access logging at itself is a self-referential AWS anti-pattern, same reasoning as checkov:skip=CKV_AWS_18 below
   # checkov:skip=CKV2_AWS_61: Lifecycle configuration not required for this bucket
   # checkov:skip=CKV_AWS_144: ADD REASON
   # checkov:skip=CKV_AWS_145: v4 legacy
@@ -33,7 +34,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "logging" {
 resource "aws_s3_bucket_versioning" "logging" {
   bucket = aws_s3_bucket.logging.id
   versioning_configuration {
-    status     = "Enabled"
+    status     = var.versioning ? "Enabled" : "Suspended"
     mfa_delete = "Disabled"
   }
 }

@@ -1,0 +1,5 @@
+suppressions:
+  - policy_id: HLD_TF_029
+    resource_id: workspace
+    reason: "Single-workspace example intentionally bundles KMS + S3 + CloudFront resources for an end-to-end module test; splitting it into smaller workspaces isn't practical for a module's own example fixture."
+    approved_by: JamesWoolfenden

@@ -1,3 +1,4 @@
+# holden:ignore:HLD_TF_026: local relative source is intentional here — this example exercises the module under active development in this same repo, not a published version
 module "cloudfront" {
   source            = "../../"
   versioning        = var.versioning
@@ -6,5 +7,5 @@ module "cloudfront" {
   buckets           = [aws_s3_bucket.b, aws_s3_bucket.routed]
   default_behaviour = var.default_behaviour
   behaviours        = var.behaviours
-  kms_key           = aws_kms_key.example
+  kms_key           = aws_kms_key.encryption
 }
