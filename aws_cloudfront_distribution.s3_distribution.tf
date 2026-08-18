@@ -1,5 +1,6 @@
 # tfsec:ignore:AWS045
 resource "aws_cloudfront_distribution" "s3_distribution" {
+  # holden:ignore:HLD_TF_063: the dynamic origin/ordered_cache_behavior/custom_error_response blocks and nested forwarded_values/cookies reflect aws_cloudfront_distribution's own required nested shape, not accidental complexity added by this module
   # holden:ignore:HLD_AWS_024: WAF disabled by design, same as checkov:skip=CKV_AWS_68/CKV2_AWS_47 below
   #checkov:skip=CKV_AWS_68: "CloudFront Distribution should have WAF enabled"
   #checkov:skip=CKV2_AWS_32:
@@ -69,6 +70,16 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
       max_ttl                = ordered_cache_behavior.value["max_ttl"]
       compress               = ordered_cache_behavior.value["compress"]
       viewer_protocol_policy = ordered_cache_behavior.value["viewer_protocol_policy"]
+    }
+  }
+
+  dynamic "custom_error_response" {
+    for_each = var.custom_error_responses
+    content {
+      error_code            = custom_error_response.value.error_code
+      response_code         = custom_error_response.value.response_code
+      response_page_path    = custom_error_response.value.response_page_path
+      error_caching_min_ttl = custom_error_response.value.error_caching_min_ttl
     }
   }
 

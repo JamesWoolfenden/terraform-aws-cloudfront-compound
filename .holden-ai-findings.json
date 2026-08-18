@@ -1,0 +1,55 @@
+{
+  "findings": [
+    {
+      "confidence": "high",
+      "explanation": "The viewer_certificate block only read cloudfront_default_certificate and minimum_protocol_version from var.viewer_certificate -- no acm_certificate_arn or iam_certificate_id was ever referenced anywhere in the resource, so a caller had no way to attach a custom certificate despite the module exposing minimum_protocol_version (which only has effect alongside a custom cert; CloudFront ignores it when using the default certificate). Worse, the variable's own default was {cloudfront_default_certificate = false, minimum_protocol_version = \"TLSv1.2_2019\"} with no certificate source at all -- AWS CloudFront requires exactly one of cloudfront_default_certificate=true / acm_certificate_arn / iam_certificate_id to be effectively set, and this default satisfied none of them. terraform validate doesn't catch this (it's a cross-field AWS API constraint, not a schema-level one), so the module's own working example silently relied on a config that would likely fail at apply time against real AWS.",
+      "file": "aws_cloudfront_distribution.s3_distribution.tf",
+      "first_seen": "2026-08-18",
+      "fix": "Applied: added acm_certificate_arn (optional(string)) to the viewer_certificate variable type, wired it into the resource's viewer_certificate block, flipped the default to cloudfront_default_certificate = true, and added a validation requiring acm_certificate_arn whenever a caller sets cloudfront_default_certificate = false.",
+      "fixable": true,
+      "id": "HOLDEN_AI_001",
+      "last_seen": "2026-08-18",
+      "line": 84,
+      "principle": "network-security",
+      "related_resources": [
+        "variable.viewer_certificate"
+      ],
+      "remediation": "Wire acm_certificate_arn through from var.viewer_certificate, and either flip the default to cloudfront_default_certificate = true (deployable out of the box) or require callers to always supply a certificate source explicitly.",
+      "resource": "aws_cloudfront_distribution.s3_distribution",
+      "severity": "MEDIUM",
+      "status": "fixed",
+      "suppression_reason": null,
+      "title": "viewer_certificate never wires a custom certificate through, and the module's own default was structurally invalid"
+    },
+    {
+      "confidence": "high",
+      "explanation": "aws_s3_object.error uploads 404.html to the bucket, clearly signaling intent to serve a custom error page, but aws_cloudfront_distribution.s3_distribution has no custom_error_response block mapping a 404 (or 403, which S3 returns via CloudFront+OAI for a missing key) to that object. Without it, a real 404 passes through CloudFront as S3's raw XML error response instead of the custom page -- the uploaded object is created but never actually reachable through the distribution it's meant to back.",
+      "file": "example/examplea/aws_s3_bucket_object.index.tf",
+      "first_seen": "2026-08-18",
+      "fixable": false,
+      "id": "HOLDEN_AI_002",
+      "last_seen": "2026-08-18",
+      "line": 11,
+      "principle": "governance",
+      "related_resources": [
+        "aws_cloudfront_distribution.s3_distribution"
+      ],
+      "remediation": "Add a custom_error_response block to the distribution: error_code = 404 (and/or 403), response_code = 404, response_page_path = \"/404.html\". This is example-specific wiring, not something the module itself should hardcode, since not every consumer will name their error page the same way.",
+      "resource": "aws_s3_object.error",
+      "severity": "LOW",
+      "status": "open",
+      "suppression_reason": null,
+      "title": "404.html is uploaded but the distribution has no custom_error_response to serve it",
+      "unresolved_since": "2026-08-18"
+    }
+  ],
+  "scan_date": "2026-08-18T09:19:01Z",
+  "scan_path": ".",
+  "suggested_policies": [
+    {
+      "rationale": "viewer_certificate requires exactly one effective certificate source (cloudfront_default_certificate=true, acm_certificate_arn, or iam_certificate_id). Setting cloudfront_default_certificate=false with neither of the other two present is a structurally invalid distribution that terraform validate does not catch (the constraint is enforced by the AWS API, not the provider schema) -- generically applicable to any aws_cloudfront_distribution, confirmed via coverage_by_type that none of the 5 existing policies on this resource type (HLD_AWS_023/024/029/112/151) check viewer_certificate completeness.",
+      "yaml": "id: HLD_AWS_XXX  # use holden next-id --cloud AWS\nname: CloudFront viewer_certificate must specify a certificate source\nprinciple: network-security\nseverity: MEDIUM\nrationale: |\n  aws_cloudfront_distribution.viewer_certificate requires exactly one\n  certificate source: cloudfront_default_certificate = true,\n  acm_certificate_arn, or iam_certificate_id. Setting\n  cloudfront_default_certificate = false with neither of the other two\n  present leaves the distribution with no valid certificate source --\n  this is a structurally invalid configuration that typically fails at\n  apply time against the real CloudFront API rather than at\n  `terraform validate`, since the provider schema does not enforce this\n  cross-field constraint.\nremediation: |\n  Either set cloudfront_default_certificate = true, or provide\n  acm_certificate_arn (or iam_certificate_id) when\n  cloudfront_default_certificate is false.\nresources:\n  aws_cloudfront_distribution:\n    if_equals:\n      path: viewer_certificate.cloudfront_default_certificate\n      value: false\n      then:\n        any:\n          - path: viewer_certificate.acm_certificate_arn\n            not_null: true\n          - path: viewer_certificate.iam_certificate_id\n            not_null: true\n"
+    }
+  ],
+  "suggested_suppressions": []
+}

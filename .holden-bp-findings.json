@@ -1,0 +1,84 @@
+{
+  "findings": [
+    {
+      "confidence": "high",
+      "explanation": "default_cache_behavior has no `compress` argument at all, so CloudFront defaults it to false and never compresses objects served through the default route. Every dynamic ordered_cache_behavior, by contrast, wires `compress` through from var.behaviours[].compress (both entries in the example set it to true). This asymmetry means whichever origin backs the default behavior gets no compression benefit while every other route does, for no apparent reason \u2014 higher bandwidth cost and slower page loads for compressible content served from the default route.",
+      "file": "aws_cloudfront_distribution.s3_distribution.tf",
+      "first_seen": "2026-08-18",
+      "fix": "compress                    = try(var.default_behaviour.compress, false)\n  allowed_methods            = var.default_behaviour.allowed_methods",
+      "fixable": true,
+      "id": "HOLDEN_BP_001",
+      "last_seen": "2026-08-18",
+      "line": 32,
+      "principle": "cost",
+      "remediation": "Add `compress = try(var.default_behaviour.compress, false)` to default_cache_behavior, matching how ordered_cache_behavior already reads it from the per-behavior map. Using try() with a false fallback preserves current behavior for existing callers that don't pass a \"compress\" key.",
+      "resource": "aws_cloudfront_distribution.s3_distribution",
+      "severity": "LOW",
+      "status": "fixed",
+      "title": "default_cache_behavior never compresses objects; ordered_cache_behavior does"
+    },
+    {
+      "confidence": "high",
+      "explanation": "var.buckets is typed list(any) and validated to have length >= 2, but locals.origins only ever reads var.buckets[0] and var.buckets[1] \u2014 a 3rd, 4th, etc. bucket passed by a caller is silently accepted by the type system and validation, then dropped with no CloudFront origin ever created for it and no error or warning. The module's own README describes it as provisioning \"multiple Origins and multiple routes,\" which overstates what the code actually supports (exactly two, hardcoded by index).",
+      "file": "locals.tf",
+      "first_seen": "2026-08-18",
+      "fix_applied": "Added a second validation block on var.buckets: length(var.buckets) <= 2. Did not restructure locals.origins to support N origins \u2014 that changes the module's public interface and was out of scope for this fix.",
+      "fixable": false,
+      "id": "HOLDEN_BP_002",
+      "last_seen": "2026-08-18",
+      "line": 4,
+      "principle": "maintainability",
+      "remediation": "Add a validation block capping var.buckets at length <= 2 so extra entries fail fast instead of being silently dropped.",
+      "resource": "local.origins",
+      "severity": "LOW",
+      "status": "fixed",
+      "title": "var.buckets accepts a list of any length but only elements [0] and [1] are ever used"
+    },
+    {
+      "confidence": "high",
+      "explanation": "price_class = \"PriceClass_200\" is a literal in the resource body. Every other CloudFront-facing knob in this module (geo_restrictions, viewer_certificate, behaviours, etc.) is caller-configurable; price_class is the one exception, so a consumer needing PriceClass_100 (cheaper, fewer edge locations) or PriceClass_All (global reach) has no way to get it short of forking the module.",
+      "file": "aws_cloudfront_distribution.s3_distribution.tf",
+      "first_seen": "2026-08-18",
+      "fix": "variable \"price_class\" {\n  type        = string\n  description = \"CloudFront price class controlling which edge locations serve the distribution.\"\n  default     = \"PriceClass_200\"\n}",
+      "fixable": true,
+      "id": "HOLDEN_BP_003",
+      "last_seen": "2026-08-18",
+      "line": 74,
+      "principle": "maintainability",
+      "remediation": "Add a `variable \"price_class\"` with `default = \"PriceClass_200\"` (preserving current behavior for existing callers) and reference `var.price_class` in the resource.",
+      "resource": "aws_cloudfront_distribution.s3_distribution",
+      "severity": "INFO",
+      "status": "fixed",
+      "title": "CloudFront price_class is hardcoded, not exposed as a variable"
+    },
+    {
+      "confidence": "high",
+      "explanation": "The key is referenced only by its resource ID/ARN throughout the example. Without an alias, identifying or managing this key in the AWS console, CLI (aws kms list-aliases), or other tooling that expects a human-readable name requires cross-referencing the raw key ID.",
+      "file": "example/examplea/aws_kms_key.encryption.tf",
+      "first_seen": "2026-08-18",
+      "fix": "resource \"aws_kms_alias\" \"encryption\" {\n  name          = \"alias/${var.bucket_name}-encryption\"\n  target_key_id = aws_kms_key.encryption.key_id\n}\n",
+      "fixable": true,
+      "id": "HOLDEN_BP_004",
+      "last_seen": "2026-08-18",
+      "line": 1,
+      "principle": "maintainability",
+      "remediation": "Add an aws_kms_alias resource: `resource \"aws_kms_alias\" \"encryption\" { name = \"alias/${var.bucket_name}-encryption\"; target_key_id = aws_kms_key.encryption.key_id }`",
+      "resource": "aws_kms_key.encryption",
+      "severity": "INFO",
+      "status": "fixed",
+      "title": "aws_kms_key.encryption has no aws_kms_alias companion"
+    }
+  ],
+  "scan_date": "2026-08-18T09:19:01Z",
+  "scan_path": ".",
+  "suggested_policies": [
+    {
+      "rationale": "CloudFront distributions commonly serve compressible content (HTML, CSS, JS, JSON) through their default_cache_behavior, and compress defaults to false when omitted. Flagging its absence is a generic, low-risk, high-value cost/performance check applicable to any aws_cloudfront_distribution, independent of this module.",
+      "yaml": "id: HLD_AWS_XXX  # use holden next-id --cloud AWS\nname: CloudFront default cache behavior should enable compression\nprinciple: cost\nseverity: LOW\nrationale: |\n  compress defaults to false when omitted from default_cache_behavior, meaning\n  CloudFront serves objects through the default route uncompressed even when\n  the content type is compressible (text/html, text/css, application/json,\n  etc.). Enabling compression is safe for any content type -- CloudFront\n  auto-detects compressible MIME types and skips already-compressed formats\n  -- and reduces both data-transfer cost and page load time with no\n  meaningful downside.\nremediation: |\n  Add `compress = true` to the default_cache_behavior block:\n\n    default_cache_behavior {\n      compress = true\n      ...\n    }\nresources:\n  aws_cloudfront_distribution:\n    path: default_cache_behavior.compress\n    not_null: true\n"
+    },
+    {
+      "rationale": "No existing holden policy checks for an aws_kms_alias companion. Every customer-managed KMS key benefits from a human-readable alias for console/CLI identification; this is a generic, low-risk maintainability check applicable to any aws_kms_key, matching the same requires_companion pattern already used for HLD_AWS_145 (S3 versioning) and HLD_AWS_132 (S3 SSE config).",
+      "yaml": "id: HLD_AWS_XXX  # use holden next-id --cloud AWS\nname: KMS keys should have an alias\nprinciple: maintainability\nseverity: INFO\nrationale: |\n  A customer-managed KMS key with no aws_kms_alias can only be identified\n  by its key ID or ARN in the AWS console, CLI, and most tooling. An alias\n  gives the key a human-readable name, making it far easier to locate,\n  audit, and reference correctly -- especially in accounts with many keys.\nremediation: |\n  Add a companion aws_kms_alias resource:\n\n    resource \"aws_kms_alias\" \"example\" {\n      name          = \"alias/my-key\"\n      target_key_id = aws_kms_key.example.key_id\n    }\nresources:\n  aws_kms_key:\n    requires_companion:\n      type: aws_kms_alias\n      via: target_key_id\n"
+    }
+  ]
+}

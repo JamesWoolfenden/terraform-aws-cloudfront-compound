@@ -230,3 +230,19 @@ variable "kms_key" {
   description = "KMS key resource used to encrypt the logging S3 bucket via SSE-KMS."
   sensitive   = true
 }
+
+variable "custom_error_responses" {
+  description = "Optional list of CloudFront custom error response configurations (e.g. mapping a 404 to a custom error page object in the origin bucket)."
+  type = list(object({
+    error_code            = number
+    response_code         = optional(number)
+    response_page_path    = optional(string)
+    error_caching_min_ttl = optional(number)
+  }))
+  default = []
+
+  validation {
+    condition     = alltrue([for e in var.custom_error_responses : contains([400, 403, 404, 405, 414, 416, 500, 501, 502, 503, 504], e.error_code)])
+    error_message = "every custom_error_responses[].error_code must be one of the HTTP status codes CloudFront supports customizing: 400, 403, 404, 405, 414, 416, 500, 501, 502, 503, 504."
+  }
+}

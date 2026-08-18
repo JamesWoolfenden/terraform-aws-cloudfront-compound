@@ -8,4 +8,12 @@ module "cloudfront" {
   default_behaviour = var.default_behaviour
   behaviours        = var.behaviours
   kms_key           = aws_kms_key.encryption
+
+  custom_error_responses = [
+    {
+      error_code         = 404
+      response_code      = 404
+      response_page_path = "/404.html"
+    }
+  ]
 }
