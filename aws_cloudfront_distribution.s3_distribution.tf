@@ -4,8 +4,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   #checkov:skip=CKV_AWS_68: "CloudFront Distribution should have WAF enabled"
   #checkov:skip=CKV2_AWS_32:
   #checkov:skip=CKV_AWS_310: "Origin failover not required for single-origin distributions"
-  #checkov:skip=CKV_AWS_174: "TLS version enforced via viewer_certificate variable default TLSv1.2_2019"
-  #checkov:skip=CKV2_AWS_42: "Certificate type controlled by caller via viewer_certificate variable"
+  #checkov:skip=CKV_AWS_174: "TLS version enforced via viewer_certificate.minimum_protocol_version, required to be set alongside acm_certificate_arn by variable validation"
+  #checkov:skip=CKV2_AWS_42: "Certificate type controlled by caller via viewer_certificate.acm_certificate_arn"
   #checkov:skip=CKV2_AWS_47: "WAF disabled by design"
   dynamic "origin" {
     for_each = local.origins
@@ -31,6 +31,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   default_cache_behavior {
     response_headers_policy_id = aws_cloudfront_response_headers_policy.headers.id
+    compress                   = var.default_behaviour.compress
     allowed_methods            = var.default_behaviour.allowed_methods
     cached_methods             = var.default_behaviour.cached_methods
     target_origin_id           = var.default_behaviour.origin_id
@@ -75,14 +76,15 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   restrictions {
     geo_restriction {
-      restriction_type = var.geo_restrictions["restriction_type"]
-      locations        = var.geo_restrictions["locations"]
+      restriction_type = var.geo_restrictions.restriction_type
+      locations        = var.geo_restrictions.locations
     }
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = var.viewer_certificate["cloudfront_default_certificate"]
-    minimum_protocol_version       = var.viewer_certificate["minimum_protocol_version"]
+    cloudfront_default_certificate = var.viewer_certificate.cloudfront_default_certificate
+    acm_certificate_arn            = var.viewer_certificate.acm_certificate_arn
+    minimum_protocol_version       = var.viewer_certificate.minimum_protocol_version
   }
 
   lifecycle {

@@ -11,10 +11,20 @@ variable "bucket_name" {
     error_message = "bucket_name must be 3-55 lowercase alphanumeric/hyphen characters, starting and ending with a letter or digit, to leave room for the \"-logging\" suffix within the 63-character S3 bucket name limit."
   }
 }
-# holden:ignore:HLD_TF_012: intentionally untyped (any) to avoid narrowing the input shape for this published module's existing consumers
+
 variable "geo_restrictions" {
   description = "CloudFront geo-restriction configuration; a map with restriction_type (e.g. none, whitelist, blacklist) and locations (list of ISO 3166-1-alpha-2 country codes)."
+  type = object({
+    restriction_type = string
+    locations        = list(string)
+  })
+
+  validation {
+    condition     = contains(["none", "whitelist", "blacklist"], var.geo_restrictions.restriction_type)
+    error_message = "geo_restrictions.restriction_type must be one of \"none\", \"whitelist\", or \"blacklist\"."
+  }
 }
+
 variable "buckets" {
   type        = list(any)
   description = "List of S3 bucket resources used as CloudFront origins; buckets[0] backs the default cache behavior and buckets[1] backs the first ordered cache behavior."
@@ -24,14 +34,61 @@ variable "buckets" {
     error_message = "buckets must contain at least 2 entries: buckets[0] backs the default cache behavior and buckets[1] backs the first ordered cache behavior."
   }
 }
-# holden:ignore:HLD_TF_012: intentionally untyped (any) to avoid narrowing the input shape for this published module's existing consumers
+
 variable "default_behaviour" {
   description = "Default cache behavior configuration for the CloudFront distribution (allowed/cached methods, origin id, forwarded query string/cookies, viewer protocol policy, and TTLs)."
+  type = object({
+    origin_id              = string
+    allowed_methods        = list(string)
+    cached_methods         = list(string)
+    query_string           = bool
+    forward                = string
+    viewer_protocol_policy = string
+    min_ttl                = number
+    default_ttl            = number
+    max_ttl                = number
+    compress               = optional(bool, false)
+  })
+
+  validation {
+    condition     = contains(["allow-all", "https-only", "redirect-to-https"], var.default_behaviour.viewer_protocol_policy)
+    error_message = "default_behaviour.viewer_protocol_policy must be one of \"allow-all\", \"https-only\", or \"redirect-to-https\"."
+  }
+
+  validation {
+    condition     = var.default_behaviour.min_ttl <= var.default_behaviour.default_ttl && var.default_behaviour.default_ttl <= var.default_behaviour.max_ttl
+    error_message = "default_behaviour TTLs must satisfy min_ttl <= default_ttl <= max_ttl."
+  }
 }
-# holden:ignore:HLD_TF_012: intentionally untyped (any) to avoid narrowing the input shape for this published module's existing consumers
+
 variable "behaviours" {
   description = "List of ordered cache behavior configurations (path pattern, methods, origin id, forwarded headers/query string/cookies, TTLs, compression, and viewer protocol policy)."
+  type = list(object({
+    path_pattern           = string
+    allowed_methods        = list(string)
+    cached_methods         = list(string)
+    origin_id              = string
+    headers                = list(string)
+    query_string           = bool
+    forward                = string
+    min_ttl                = number
+    default_ttl            = number
+    max_ttl                = number
+    compress               = bool
+    viewer_protocol_policy = string
+  }))
+
+  validation {
+    condition     = alltrue([for b in var.behaviours : contains(["allow-all", "https-only", "redirect-to-https"], b.viewer_protocol_policy)])
+    error_message = "every behaviours[].viewer_protocol_policy must be one of \"allow-all\", \"https-only\", or \"redirect-to-https\"."
+  }
+
+  validation {
+    condition     = alltrue([for b in var.behaviours : b.min_ttl <= b.default_ttl && b.default_ttl <= b.max_ttl])
+    error_message = "every behaviours[] entry's TTLs must satisfy min_ttl <= default_ttl <= max_ttl."
+  }
 }
+
 variable "content_security_policy" {
   type        = map(any)
   description = "Content-Security-Policy response header configuration applied via the CloudFront response headers policy."
@@ -45,6 +102,7 @@ variable "content_security_policy" {
     error_message = "content_security_policy must set both the \"content_security_policy\" and \"override\" keys."
   }
 }
+
 variable "content_type_options" {
   type        = map(any)
   description = "X-Content-Type-Options response header configuration applied via the CloudFront response headers policy."
@@ -57,6 +115,7 @@ variable "content_type_options" {
     error_message = "content_type_options must set the \"override\" key."
   }
 }
+
 variable "frame_options" {
   type        = map(any)
   description = "X-Frame-Options response header configuration applied via the CloudFront response headers policy."
@@ -104,6 +163,7 @@ variable "strict_transport_security" {
     error_message = "strict_transport_security.access_control_max_age_sec must be a positive number of seconds."
   }
 }
+
 variable "xss_protection" {
   type        = map(any)
   description = "X-XSS-Protection response header configuration applied via the CloudFront response headers policy."
@@ -119,18 +179,32 @@ variable "xss_protection" {
   }
 }
 
-# holden:ignore:HLD_TF_012: intentionally untyped (any) to avoid narrowing the input shape for this published module's existing consumers
 variable "policy_name" {
   description = "Name of the CloudFront response headers policy."
+  type        = string
   default     = "examplea"
+
+  validation {
+    condition     = length(var.policy_name) > 0
+    error_message = "policy_name must not be empty."
+  }
 }
 
-# holden:ignore:HLD_TF_012: intentionally untyped (any) to avoid narrowing the input shape for this published module's existing consumers
 variable "viewer_certificate" {
-  description = "CloudFront viewer certificate configuration (whether to use the CloudFront default certificate and the minimum TLS protocol version)."
+  description = "CloudFront viewer certificate configuration: use the CloudFront default certificate, or set acm_certificate_arn for a custom domain. minimum_protocol_version only takes effect when acm_certificate_arn is set -- CloudFront ignores it for the default certificate."
+  type = object({
+    cloudfront_default_certificate = bool
+    minimum_protocol_version       = string
+    acm_certificate_arn            = optional(string)
+  })
   default = {
-    cloudfront_default_certificate = false
+    cloudfront_default_certificate = true
     minimum_protocol_version       = "TLSv1.2_2019"
+  }
+
+  validation {
+    condition     = var.viewer_certificate.cloudfront_default_certificate || var.viewer_certificate.acm_certificate_arn != null
+    error_message = "viewer_certificate must set acm_certificate_arn when cloudfront_default_certificate is false."
   }
 }
 
