@@ -2,12 +2,7 @@
 resource "aws_cloudfront_distribution" "s3_distribution" {
   # holden:ignore:HLD_TF_063: the dynamic origin/ordered_cache_behavior/custom_error_response blocks and nested forwarded_values/cookies reflect aws_cloudfront_distribution's own required nested shape, not accidental complexity added by this module
   # holden:ignore:HLD_AWS_024: WAF disabled by design, same as checkov:skip=CKV_AWS_68/CKV2_AWS_47 below
-  #checkov:skip=CKV_AWS_68: "CloudFront Distribution should have WAF enabled"
-  #checkov:skip=CKV2_AWS_32:
-  #checkov:skip=CKV_AWS_310: "Origin failover not required for single-origin distributions"
-  #checkov:skip=CKV_AWS_174: "TLS version enforced via viewer_certificate.minimum_protocol_version, required to be set alongside acm_certificate_arn by variable validation"
-  #checkov:skip=CKV2_AWS_42: "Certificate type controlled by caller via viewer_certificate.acm_certificate_arn"
-  #checkov:skip=CKV2_AWS_47: "WAF disabled by design"
+
   dynamic "origin" {
     for_each = local.origins
     content {

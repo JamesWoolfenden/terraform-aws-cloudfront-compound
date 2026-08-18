@@ -1,5 +1,4 @@
 resource "aws_s3_object" "cat" {
-  #checkov:skip=CKV_AWS_186:
   bucket       = aws_s3_bucket.routed.id
   key          = "path1/cat.jpg"
   source       = "${path.module}/files/path1/cat.jpg"
@@ -9,7 +8,6 @@ resource "aws_s3_object" "cat" {
   }
 }
 resource "aws_s3_object" "dog" {
-  #checkov:skip=CKV_AWS_186:
   bucket       = aws_s3_bucket.routed.id
   key          = "path2/dog.jpg"
   source       = "${path.module}/files/path2/dog.jpg"

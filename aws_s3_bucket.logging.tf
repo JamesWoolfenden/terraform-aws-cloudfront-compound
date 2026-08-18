@@ -1,15 +1,6 @@
 # tfsec:ignore:AWS077
 resource "aws_s3_bucket" "logging" {
   # holden:ignore:HLD_AWS_144: this is the terminal logging destination bucket; pointing access logging at itself is a self-referential AWS anti-pattern, same reasoning as checkov:skip=CKV_AWS_18 below
-  # checkov:skip=CKV2_AWS_61: Lifecycle configuration not required for this bucket
-  # checkov:skip=CKV_AWS_144: ADD REASON
-  # checkov:skip=CKV_AWS_145: v4 legacy
-  # checkov:skip=CKV_AWS_19: v4 legacy
-  # checkov:skip=CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
-  # checkov:skip=CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
-  # checkov:skip=CKV_AWS_52: "Ensure S3 bucket has MFA delete enabled"
-  # checkov:skip=CKV2_AWS_41: Not required
-  # checkov:skip=CKV2_AWS_62: Event notifications not required for logging bucket
   bucket = "${var.bucket_name}-logging"
 
 
