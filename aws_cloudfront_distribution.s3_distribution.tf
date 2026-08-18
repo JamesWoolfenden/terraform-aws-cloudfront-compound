@@ -1,5 +1,6 @@
 # tfsec:ignore:AWS045
 resource "aws_cloudfront_distribution" "s3_distribution" {
+  # holden:ignore:HLD_AWS_024: WAF disabled by design, same as checkov:skip=CKV_AWS_68/CKV2_AWS_47 below
   #checkov:skip=CKV_AWS_68: "CloudFront Distribution should have WAF enabled"
   #checkov:skip=CKV2_AWS_32:
   #checkov:skip=CKV_AWS_310: "Origin failover not required for single-origin distributions"
@@ -29,7 +30,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   default_cache_behavior {
-    response_headers_policy_id = aws_cloudfront_response_headers_policy.example.id
+    response_headers_policy_id = aws_cloudfront_response_headers_policy.headers.id
     allowed_methods            = var.default_behaviour.allowed_methods
     cached_methods             = var.default_behaviour.cached_methods
     target_origin_id           = var.default_behaviour.origin_id
