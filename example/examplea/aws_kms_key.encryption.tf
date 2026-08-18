@@ -5,3 +5,8 @@ resource "aws_kms_key" "encryption" {
   enable_key_rotation     = true
   deletion_window_in_days = 7
 }
+
+resource "aws_kms_alias" "encryption" {
+  name          = "alias/${var.bucket_name}-encryption"
+  target_key_id = aws_kms_key.encryption.key_id
+}

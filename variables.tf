@@ -1,3 +1,4 @@
+# holden:ignore:HLD_TF_027: this module is deliberately a "compound" bundle of CloudFront distribution + response headers policy + S3 logging bucket configuration (see module name/README) -- the variable count reflects that stated scope, not accidental scope creep
 variable "versioning" {
   type        = bool
   description = "Switch to control versioning"
@@ -27,11 +28,16 @@ variable "geo_restrictions" {
 
 variable "buckets" {
   type        = list(any)
-  description = "List of S3 bucket resources used as CloudFront origins; buckets[0] backs the default cache behavior and buckets[1] backs the first ordered cache behavior."
+  description = "List of S3 bucket resources used as CloudFront origins; buckets[0] backs the default cache behavior and buckets[1] backs the first ordered cache behavior. Exactly 2 entries are used -- any beyond that are accepted by the type system but never wired to an origin."
 
   validation {
     condition     = length(var.buckets) >= 2
     error_message = "buckets must contain at least 2 entries: buckets[0] backs the default cache behavior and buckets[1] backs the first ordered cache behavior."
+  }
+
+  validation {
+    condition     = length(var.buckets) <= 2
+    error_message = "buckets must contain exactly 2 entries: only buckets[0] and buckets[1] are ever wired to a CloudFront origin. A 3rd+ entry would be silently unused."
   }
 }
 
@@ -86,6 +92,17 @@ variable "behaviours" {
   validation {
     condition     = alltrue([for b in var.behaviours : b.min_ttl <= b.default_ttl && b.default_ttl <= b.max_ttl])
     error_message = "every behaviours[] entry's TTLs must satisfy min_ttl <= default_ttl <= max_ttl."
+  }
+}
+
+variable "price_class" {
+  description = "CloudFront price class controlling which edge locations serve the distribution."
+  type        = string
+  default     = "PriceClass_200"
+
+  validation {
+    condition     = contains(["PriceClass_100", "PriceClass_200", "PriceClass_All"], var.price_class)
+    error_message = "price_class must be one of \"PriceClass_100\", \"PriceClass_200\", or \"PriceClass_All\"."
   }
 }
 

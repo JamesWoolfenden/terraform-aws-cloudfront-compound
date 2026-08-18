@@ -72,7 +72,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
   }
 
-  price_class = "PriceClass_200"
+  price_class = var.price_class
 
   restrictions {
     geo_restriction {
